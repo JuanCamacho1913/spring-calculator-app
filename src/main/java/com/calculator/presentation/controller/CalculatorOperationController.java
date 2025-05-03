@@ -3,6 +3,7 @@ package com.calculator.presentation.controller;
 import com.calculator.presentation.dto.CalculationOperationRequest;
 import com.calculator.presentation.dto.CalculationOperationResponse;
 import com.calculator.service.interfaces.ICalculatorOperationService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,8 +32,8 @@ public class CalculatorOperationController {
     }
 
     @PostMapping("/calculate")
-    public ResponseEntity<CalculationOperationResponse> save(@RequestBody CalculationOperationRequest request){
-        CalculationOperationResponse calculationOperationResponse = this.calculatorOperationService.save(request);
+    public ResponseEntity<CalculationOperationResponse> saveCalculation(@RequestBody @Valid CalculationOperationRequest request){
+        CalculationOperationResponse calculationOperationResponse = this.calculatorOperationService.saveCalculation(request);
         return new ResponseEntity<>(calculationOperationResponse, HttpStatus.CREATED);
     }
 }
