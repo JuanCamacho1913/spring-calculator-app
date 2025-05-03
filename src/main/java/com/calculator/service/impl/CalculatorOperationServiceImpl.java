@@ -8,7 +8,6 @@ import com.calculator.persistence.repository.ICalculatorRepository;
 import com.calculator.presentation.dto.CalculationOperationRequest;
 import com.calculator.presentation.dto.CalculationOperationResponse;
 import com.calculator.service.interfaces.ICalculatorOperationService;
-import com.calculator.util.OperationTypeEnum;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -40,7 +39,7 @@ public class CalculatorOperationServiceImpl implements ICalculatorOperationServi
     }
 
     @Override
-    public CalculationOperationResponse save(CalculationOperationRequest request) {
+    public CalculationOperationResponse saveCalculation(CalculationOperationRequest request) {
         BigDecimal result;
 
         switch (request.operation()){
@@ -54,14 +53,21 @@ public class CalculatorOperationServiceImpl implements ICalculatorOperationServi
                 result = request.operandA().multiply(request.operandB());
                 break;
             case DIVISION:
-                result = request.operandA().divide(request.operandB());
+                if (BigDecimal.ZERO.compareTo(request.operandB()) == 0) {
+                    throw new ArithmeticException("Cannot be divided by zero.");
+                }
+                result = request.operandA().divide(request.operandB(), MathContext.DECIMAL128);
                 break;
             case POWER:
                 result = request.operandA().pow(request.operandB().intValueExact());
                 break;
             case SQUARE_ROOT:
+                if (request.operandA().compareTo(BigDecimal.ZERO) < 0) {
+                    throw new ArithmeticException("Cannot calculate square root of a negative number.");
+                }
                 double operandA = request.operandA().doubleValue();
                 result = BigDecimal.valueOf(Math.sqrt(operandA)).round(new MathContext(7));
+                break;
             default:
                 throw new ArithmeticOperationException("Arithmetic operation don't exist");
         }

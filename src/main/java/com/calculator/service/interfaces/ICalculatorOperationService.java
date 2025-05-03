@@ -10,5 +10,5 @@ public interface ICalculatorOperationService {
 
     List<CalculationOperationResponse> findAll();
     CalculationOperationResponse findById(UUID id);
-    CalculationOperationResponse save(CalculationOperationRequest calculationOperationRequest);
+    CalculationOperationResponse saveCalculation(CalculationOperationRequest calculationOperationRequest);
 }
