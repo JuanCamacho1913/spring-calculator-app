@@ -1,4 +1,4 @@
-package com.calculator.presentation.dto;
+package com.calculator.presentation.dto.login;
 
 import jakarta.validation.constraints.NotBlank;
 
