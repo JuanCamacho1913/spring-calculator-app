@@ -4,6 +4,7 @@ import com.calculator.exception.error.ArithmeticOperationException;
 import com.calculator.exception.error.ElementNotFoundException;
 import com.calculator.mapper.ICalculatorOperatorMapper;
 import com.calculator.persistence.entity.CalculatorOperation;
+import com.calculator.persistence.entity.UserEntity;
 import com.calculator.persistence.repository.ICalculatorRepository;
 import com.calculator.presentation.dto.CalculationOperationRequest;
 import com.calculator.presentation.dto.CalculationOperationResponse;
@@ -22,6 +23,7 @@ public class CalculatorOperationServiceImpl implements ICalculatorOperationServi
 
     private ICalculatorRepository calculatorRepository;
     private ICalculatorOperatorMapper calculatorOperatorMapper;
+    private UserDetailServiceImpl userDetailServiceImpl;
 
     @Override
     public List<CalculationOperationResponse> findAll() {
@@ -40,6 +42,7 @@ public class CalculatorOperationServiceImpl implements ICalculatorOperationServi
 
     @Override
     public CalculationOperationResponse saveCalculation(CalculationOperationRequest request) {
+
         BigDecimal result;
 
         switch (request.operation()){
@@ -71,9 +74,10 @@ public class CalculatorOperationServiceImpl implements ICalculatorOperationServi
             default:
                 throw new ArithmeticOperationException("Arithmetic operation don't exist");
         }
-
+        UserEntity user = this.userDetailServiceImpl.getCurrentUsername();
         CalculatorOperation calculatorOperation = this.calculatorOperatorMapper.toEntity(request);
         calculatorOperation.setResult(result);
+        calculatorOperation.setUser(user);
         CalculatorOperation calculatorOperationSaved = this.calculatorRepository.save(calculatorOperation);
         return this.calculatorOperatorMapper.toResponse(calculatorOperationSaved);
     }

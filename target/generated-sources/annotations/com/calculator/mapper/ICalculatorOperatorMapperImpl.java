@@ -1,6 +1,7 @@
 package com.calculator.mapper;
 
 import com.calculator.persistence.entity.CalculatorOperation;
+import com.calculator.persistence.entity.UserEntity;
 import com.calculator.presentation.dto.CalculationOperationRequest;
 import com.calculator.presentation.dto.CalculationOperationResponse;
 import com.calculator.util.OperationTypeEnum;
@@ -14,7 +15,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-05-02T20:59:00-0500",
+    date = "2025-05-03T22:44:19-0500",
     comments = "version: 1.6.3, compiler: javac, environment: Java 17.0.8 (Oracle Corporation)"
 )
 @Component
@@ -41,6 +42,7 @@ public class ICalculatorOperatorMapperImpl implements ICalculatorOperatorMapper 
             return null;
         }
 
+        UUID userId = null;
         UUID id = null;
         OperationTypeEnum operation = null;
         BigDecimal operandA = null;
@@ -48,6 +50,7 @@ public class ICalculatorOperatorMapperImpl implements ICalculatorOperatorMapper 
         BigDecimal result = null;
         LocalDateTime timestamp = null;
 
+        userId = calculatorOperationUserId( calculatorOperation );
         id = calculatorOperation.getId();
         operation = calculatorOperation.getOperation();
         operandA = calculatorOperation.getOperandA();
@@ -55,7 +58,7 @@ public class ICalculatorOperatorMapperImpl implements ICalculatorOperatorMapper 
         result = calculatorOperation.getResult();
         timestamp = calculatorOperation.getTimestamp();
 
-        CalculationOperationResponse calculationOperationResponse = new CalculationOperationResponse( id, operation, operandA, operandB, result, timestamp );
+        CalculationOperationResponse calculationOperationResponse = new CalculationOperationResponse( id, operation, operandA, operandB, result, timestamp, userId );
 
         return calculationOperationResponse;
     }
@@ -72,5 +75,13 @@ public class ICalculatorOperatorMapperImpl implements ICalculatorOperatorMapper 
         }
 
         return list;
+    }
+
+    private UUID calculatorOperationUserId(CalculatorOperation calculatorOperation) {
+        UserEntity user = calculatorOperation.getUser();
+        if ( user == null ) {
+            return null;
+        }
+        return user.getId();
     }
 }
