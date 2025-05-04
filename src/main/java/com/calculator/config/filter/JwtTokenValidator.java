@@ -35,7 +35,6 @@ public class JwtTokenValidator extends OncePerRequestFilter {
             DecodedJWT decodedJWT = jwtUtils.validationToken(jwtToken);
             String username = jwtUtils.extractUsername(decodedJWT);
 
-            // No authorities (roles) usados
             Authentication authentication = new UsernamePasswordAuthenticationToken(username, null, null);
             SecurityContext context = SecurityContextHolder.createEmptyContext();
             context.setAuthentication(authentication);

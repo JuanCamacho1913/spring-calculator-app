@@ -3,6 +3,7 @@ package com.calculator.persistence.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -22,6 +23,12 @@ public class UserEntity {
 
     private String password;
 
+    @Column(nullable = false, unique = true)
+    private String email;
+
+    @Column(name = "create_at", updatable = false)
+    private LocalDateTime createdAt;
+
     @Column(name = "is_enable")
     private boolean isEnabled;
 
@@ -39,6 +46,7 @@ public class UserEntity {
         if (id == null){
             this.id = UUID.randomUUID();
         }
+        this.createdAt = LocalDateTime.now();
     }
 }
 
