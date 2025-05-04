@@ -34,6 +34,10 @@ public class CalculatorOperation {
     @Column(nullable = false, updatable = false)
     private LocalDateTime timestamp;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    private UserEntity user;
+
     @PrePersist
     public void prePersist(){
         if (id == null){

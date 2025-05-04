@@ -12,6 +12,7 @@ public record CalculationOperationResponse(
         BigDecimal operandA,
         BigDecimal operandB,
         BigDecimal result,
-        LocalDateTime timestamp
+        LocalDateTime timestamp,
+        UUID userId
 ) {
 }
