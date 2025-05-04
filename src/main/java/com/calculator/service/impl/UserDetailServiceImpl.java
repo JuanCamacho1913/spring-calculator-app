@@ -160,14 +160,6 @@ public class UserDetailServiceImpl implements UserDetailsService {
 
         UserEntity userEntitySaved = this.userRepository.save(userEntity);
 
-        Authentication authentication = new UsernamePasswordAuthenticationToken(
-                userEntitySaved.getUsername(),
-                null,
-                new ArrayList<>()
-        );
-
-        String accessToken = this.jwtUtils.createToken(authentication);
-
         return new AuthRegisterResponse(userEntitySaved.getUsername(),userEntitySaved.getEmail(),"User created successfully",true);
     }
 
