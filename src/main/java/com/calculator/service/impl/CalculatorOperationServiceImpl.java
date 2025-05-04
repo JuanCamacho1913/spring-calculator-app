@@ -65,8 +65,8 @@ public class CalculatorOperationServiceImpl implements ICalculatorOperationServi
                 result = request.operandA().pow(request.operandB().intValueExact());
                 break;
             case SQUARE_ROOT:
-                if (request.operandA().compareTo(BigDecimal.ZERO) < 0) {
-                    throw new ArithmeticException("Cannot calculate square root of a negative number.");
+                if (request.operandA().compareTo(BigDecimal.ZERO) <= 0) {
+                    throw new ArithmeticException("Cannot calculate square root of 0 or negative number.");
                 }
                 double operandA = request.operandA().doubleValue();
                 result = BigDecimal.valueOf(Math.sqrt(operandA)).round(new MathContext(7));
