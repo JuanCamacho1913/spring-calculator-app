@@ -15,8 +15,6 @@ import java.util.List;
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface ICalculatorOperatorMapper {
 
-    ICalculatorOperatorMapper INSTANCE = Mappers.getMapper(ICalculatorOperatorMapper.class);
-
     CalculatorOperation toEntity(CalculationOperationRequest calculationOperationRequest);
 
     @Mapping(source = "user.id", target = "userId")

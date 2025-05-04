@@ -5,8 +5,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.View;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,13 +16,25 @@ import java.util.Map;
 @RestControllerAdvice
 public class CalculatorControllerAdvice {
 
+    private final View error;
+
+    public CalculatorControllerAdvice(View error) {
+        this.error = error;
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Map<String, Object> handleFieldErrors(MethodArgumentNotValidException e){
+    public ResponseEntity<Map<String, Object>> handleFieldErrors(MethodArgumentNotValidException e){
         Map<String, Object> errors = new HashMap<>();
+
+        errors.put("status", HttpStatus.BAD_REQUEST.value());
+        errors.put("message", "Invalid operation parameters");
+        List<String> message = new ArrayList<>();
         e.getBindingResult().getFieldErrors().forEach(error -> {
-            errors.put(error.getField(), error.getDefaultMessage());
+            message.add(error.getDefaultMessage());
         });
-        return errors;
+
+        errors.put("details", message);
+        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(NullPointerException.class)
