@@ -15,8 +15,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-05-05T14:10:11-0500",
-    comments = "version: 1.6.3, compiler: javac, environment: Java 17.0.8 (Oracle Corporation)"
+    date = "2025-05-05T15:26:15-0500",
+    comments = "version: 1.6.3, compiler: Eclipse JDT (IDE) 3.42.0.z20250331-1358, environment: Java 21.0.6 (Eclipse Adoptium)"
 )
 @Component
 public class ICalculatorOperatorMapperImpl implements ICalculatorOperatorMapper {
@@ -29,9 +29,9 @@ public class ICalculatorOperatorMapperImpl implements ICalculatorOperatorMapper 
 
         CalculatorOperation calculatorOperation = new CalculatorOperation();
 
-        calculatorOperation.setOperation( calculationOperationRequest.operation() );
         calculatorOperation.setOperandA( calculationOperationRequest.operandA() );
         calculatorOperation.setOperandB( calculationOperationRequest.operandB() );
+        calculatorOperation.setOperation( calculationOperationRequest.operation() );
 
         return calculatorOperation;
     }
