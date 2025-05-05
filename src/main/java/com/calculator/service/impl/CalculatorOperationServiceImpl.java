@@ -10,6 +10,8 @@ import com.calculator.presentation.dto.CalculationOperationRequest;
 import com.calculator.presentation.dto.CalculationOperationResponse;
 import com.calculator.service.interfaces.ICalculatorOperationService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -26,10 +28,10 @@ public class CalculatorOperationServiceImpl implements ICalculatorOperationServi
     private UserDetailServiceImpl userDetailServiceImpl;
 
     @Override
-    public List<CalculationOperationResponse> findAll() {
-        List<CalculatorOperation> calculatorOperationList = this.calculatorRepository.findAll();
+    public Page<CalculationOperationResponse> findAll(Pageable pageable) {
+        Page<CalculatorOperation> calculatorOperationPage = this.calculatorRepository.findAll(pageable);
 
-        return this.calculatorOperatorMapper.toResponseList(calculatorOperationList);
+        return calculatorOperationPage.map(op -> this.calculatorOperatorMapper.toResponse(op));
     }
 
     @Override
@@ -80,5 +82,15 @@ public class CalculatorOperationServiceImpl implements ICalculatorOperationServi
         calculatorOperation.setUser(user);
         CalculatorOperation calculatorOperationSaved = this.calculatorRepository.save(calculatorOperation);
         return this.calculatorOperatorMapper.toResponse(calculatorOperationSaved);
+    }
+
+    @Override
+    public String delete(UUID id) {
+        CalculatorOperation calculatorOperation = this.calculatorRepository.findById(id)
+                .orElseThrow(() -> new ElementNotFoundException("Operation whit " + id + " does not exist"));
+
+        this.calculatorRepository.deleteById(id);
+
+        return "Operation delete successful";
     }
 }

@@ -37,11 +37,8 @@ public class SecurityConfig {
                     //request public loggin
                     http.requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll();
                     http.requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll();
-                    //request calculator
-                    http.requestMatchers(HttpMethod.GET, "/api/findAll").permitAll();
-                    http.requestMatchers(HttpMethod.GET, "/api/find/{id}").permitAll();
-                    http.requestMatchers(HttpMethod.POST, "/api/calculate").permitAll();
-                    http.anyRequest().denyAll();
+
+                    http.anyRequest().authenticated();
                 })
                 .addFilterBefore(new JwtTokenValidator(jwtUtils), BasicAuthenticationFilter.class);
         return httpSecurity.build();
