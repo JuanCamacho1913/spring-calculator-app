@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -111,7 +110,7 @@ public class CalculatorOperationServiceImpl implements ICalculatorOperationServi
         CalculatorOperation calculatorOperation = this.calculatorRepository.findById(id)
                 .orElseThrow(() -> new ElementNotFoundException("Operation whit " + id + " does not exist"));
 
-        this.calculatorRepository.deleteById(id);
+        this.calculatorRepository.delete(calculatorOperation);
 
         return "Operation delete successful";
     }
