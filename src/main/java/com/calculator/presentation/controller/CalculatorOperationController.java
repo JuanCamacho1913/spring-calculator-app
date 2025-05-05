@@ -24,9 +24,15 @@ public class CalculatorOperationController {
     private ICalculatorOperationService calculatorOperationService;
 
     @GetMapping("/history")
-    public ResponseEntity<Page<CalculationOperationResponse>> findAll(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
-        Pageable pageable = PageRequest.of(page, size, Sort.by("result").ascending());
-        Page<CalculationOperationResponse> calculationOperationResponseList = this.calculatorOperationService.findAll(pageable);
+    public ResponseEntity<Page<CalculationOperationResponse>> findAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String operationType,
+            @RequestParam(required = false) String startDate,
+            @RequestParam(required = false) String endDate) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("timestamp").ascending());
+        Page<CalculationOperationResponse> calculationOperationResponseList =
+                this.calculatorOperationService.findAll(pageable, operationType, startDate, endDate);
         return new ResponseEntity<>(calculationOperationResponseList, HttpStatus.OK);
     }
 

@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public interface ICalculatorOperationService {
 
-    Page<CalculationOperationResponse> findAll(Pageable pageable);
+    Page<CalculationOperationResponse> findAll(Pageable pageable, String operationType, String startDate, String endDate);
     CalculationOperationResponse findById(UUID id);
     CalculationOperationResponse saveCalculation(CalculationOperationRequest calculationOperationRequest);
     String delete(UUID uuid);
