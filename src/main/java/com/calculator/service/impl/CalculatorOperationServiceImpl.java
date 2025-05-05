@@ -9,6 +9,7 @@ import com.calculator.persistence.repository.ICalculatorRepository;
 import com.calculator.presentation.dto.CalculationOperationRequest;
 import com.calculator.presentation.dto.CalculationOperationResponse;
 import com.calculator.service.interfaces.ICalculatorOperationService;
+import com.calculator.util.OperationTypeEnum;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,10 +30,30 @@ public class CalculatorOperationServiceImpl implements ICalculatorOperationServi
     private UserDetailServiceImpl userDetailServiceImpl;
 
     @Override
-    public Page<CalculationOperationResponse> findAll(Pageable pageable) {
-        Page<CalculatorOperation> calculatorOperationPage = this.calculatorRepository.findAll(pageable);
+    public Page<CalculationOperationResponse> findAll(Pageable pageable, String operationType, String startDate, String endDate) {
+        if (operationType == null && startDate == null && endDate == null) {
+            return this.calculatorRepository.findAll(pageable)
+                    .map(op -> this.calculatorOperatorMapper.toResponse(op));
+        }
 
-        return calculatorOperationPage.map(op -> this.calculatorOperatorMapper.toResponse(op));
+        LocalDateTime start = startDate != null ?
+                LocalDateTime.parse(startDate + "T00:00:00") :
+                LocalDateTime.of(1900, 1, 1, 0, 0);
+
+        LocalDateTime end = endDate != null ?
+                LocalDateTime.parse(endDate + "T23:59:59") :
+                LocalDateTime.now();
+
+        Page<CalculatorOperation> operationPage = operationType != null ?
+                this.calculatorRepository.findByOperationAndTimestampBetween(
+                        OperationTypeEnum.valueOf(operationType.toUpperCase()),
+                        start,
+                        end,
+                        pageable
+                ) :
+                this.calculatorRepository.findByTimestampBetween(start, end, pageable);
+
+        return operationPage.map(op -> this.calculatorOperatorMapper.toResponse(op));
     }
 
     @Override
