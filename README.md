@@ -58,12 +58,8 @@ El proyecto está organizado en los siguientes paquetes:
 - `com.example.calculator.service`: Contiene la lógica de negocio de la aplicación estructurada en dos componentes principales. Interface, Implementaciones.
 - `com.example.calculator.utils`: Contiene herramientas como JwtUtils encapsula toda la lógica relacionada con la gestión de tokens JWT, incluyendo generación, validación y extracción de información de tokens y OperationTypeEnum define los tipos de operaciones disponibles en el sistema, proporcionando un conjunto controlado de constantes.
 
-## Clases Principales
-A continuación, se describen algunas de las clases principales del proyecto:
+## Controlladores
 
-### `ICalculatorOperationService`
-- Interfaces de servicio que definen operaciones.`CalculatorOperationServiceImpl`,`UserDetailServiceImpl` respectivamente.
-### Controladores
 - La aplicación implementa una estructura modular de rutas `AuthController`, `CalculatorOperationController` delegan la lógica de negocio a las capas inferiores. Cada controlador se especializa en un recurso o funcionalidad específica de la aplicación.
 
 ### Rutas:
@@ -75,9 +71,9 @@ http://localhost:8080
 **CalculatorOperationController:**
 
 - **GET**
-- `/api/history`: Lista paginada de operaciones del usuario.
-- `/api/history?operationType=ADDITION`: Buscar por tipo de operación.
-- `/api/history?startDate=2025-01-01&endDate=2025-05-05`: Buscar por rango de fechas. Las fechas deben estar en formato YYYY-MM-DD.
+- `/api/history`: Lista paginada de 10 en 10 de operaciones del usuario.
+- `/api/history?operationType=operationType`: Buscar por tipo de operación.
+- `/api/history?startDate=2025-05-05T15:30:00&endDate=2025-05-05T20:30:00`: Buscar por rango de fechas.
 - `/api/history/{id}`: Detalle de una operación específica por su ID.
 
 
