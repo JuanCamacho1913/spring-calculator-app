@@ -5,8 +5,8 @@ import com.calculator.persistence.entity.CalculatorOperation;
 import com.calculator.presentation.dto.CalculationOperationRequest;
 import com.calculator.presentation.dto.CalculationOperationResponse;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.NullValuePropertyMappingStrategy;
-import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 
@@ -14,10 +14,9 @@ import java.util.List;
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface ICalculatorOperatorMapper {
 
-    ICalculatorOperatorMapper INSTANCE = Mappers.getMapper(ICalculatorOperatorMapper.class);
-
     CalculatorOperation toEntity(CalculationOperationRequest calculationOperationRequest);
 
+    @Mapping(source = "user.id", target = "userId")
     CalculationOperationResponse toResponse(CalculatorOperation calculatorOperation);
 
     List<CalculationOperationResponse> toResponseList(List<CalculatorOperation> calculationOperation);

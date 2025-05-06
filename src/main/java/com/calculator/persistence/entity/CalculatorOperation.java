@@ -25,14 +25,18 @@ public class CalculatorOperation {
     @Enumerated(EnumType.STRING)
     private OperationTypeEnum operation;
 
-    @Column(name = "operand_A", precision = 7, scale = 2, nullable = false)
+    @Column(name = "operand_A", precision = 7, nullable = false)
     private BigDecimal operandA;
-    @Column(name = "operand_B", precision = 7, scale = 2, nullable = false)
+    @Column(name = "operand_B", precision = 7, nullable = false)
     private BigDecimal operandB;
     @Column(precision = 10, scale = 2, nullable = false)
     private BigDecimal result;
     @Column(nullable = false, updatable = false)
     private LocalDateTime timestamp;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    private UserEntity user;
 
     @PrePersist
     public void prePersist(){
