@@ -26,9 +26,9 @@ public class CalculatorOperationController {
     public ResponseEntity<Page<CalculationOperationResponse>> findAll(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(required = false) String operationType,
-            @RequestParam(required = false) String startDate,
-            @RequestParam(required = false) String endDate) {
+            @RequestParam(required = false, defaultValue = "") String operationType,
+            @RequestParam(required = false, defaultValue = "") String startDate,
+            @RequestParam(required = false, defaultValue = "") String endDate) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("timestamp").ascending());
         Page<CalculationOperationResponse> calculationOperationResponseList =
                 this.calculatorOperationService.findAll(pageable, operationType, startDate, endDate);

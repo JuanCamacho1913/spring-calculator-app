@@ -13,10 +13,8 @@ import java.util.UUID;
 @Repository
 public interface ICalculatorRepository extends JpaRepository<CalculatorOperation, UUID> {
 
-    Page<CalculatorOperation> findByOperationAndTimestampBetween(
+    Page<CalculatorOperation> findByOperation(
             OperationTypeEnum operation,
-            LocalDateTime startDate,
-            LocalDateTime endDate,
             Pageable pageable
     );
 

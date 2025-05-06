@@ -4,6 +4,7 @@ import com.calculator.config.filter.JwtTokenValidator;
 import com.calculator.service.impl.UserDetailServiceImpl;
 import com.calculator.util.JwtUtils;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -47,7 +48,8 @@ public class SecurityConfig {
 
                     http.anyRequest().authenticated();
                 })
-                .addFilterBefore(new JwtTokenValidator(jwtUtils), BasicAuthenticationFilter.class);
+                .addFilterBefore(new JwtTokenValidator(jwtUtils), BasicAuthenticationFilter.class)
+                .exceptionHandling(Customizer.withDefaults());
         return httpSecurity.build();
     }
 
