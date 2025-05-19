@@ -1,5 +1,7 @@
 package com.calculator.util;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public enum OperationTypeEnum {
 
     ADDITION,
@@ -7,5 +9,8 @@ public enum OperationTypeEnum {
     MULTIPLICATION,
     DIVISION,
     POWER,
-    SQUARE_ROOT
+    SQUARE_ROOT,
+
+    @JsonIgnore
+    UNKNOWN
 }

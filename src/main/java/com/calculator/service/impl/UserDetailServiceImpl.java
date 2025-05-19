@@ -31,7 +31,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
     private PasswordEncoder passwordEncoder;
     private JwtUtils jwtUtils;
 
-    private static class CustomUserDetails implements UserDetails {
+    public static class CustomUserDetails implements UserDetails {
         private final String username;
         private final String password;
         private final String email;
@@ -114,10 +114,6 @@ public class UserDetailServiceImpl implements UserDetailsService {
 
     public Authentication authenticate(String username, String password) {
         UserDetails userDetails = this.loadUserByUsername(username);
-
-        if (userDetails == null) {
-            throw new BadCredentialsException("Invalid username or password");
-        }
 
         if (!passwordEncoder.matches(password, userDetails.getPassword())) {
             throw new BadCredentialsException("Invalid password");
