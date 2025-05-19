@@ -1,0 +1,13 @@
+C:\Users\juan_camacho\Desktop\Descargas Spring initializr\spring-calculator-app\src\test\java\com\calculator\advice\CalculatorControllerAdviceTest.java
+C:\Users\juan_camacho\Desktop\Descargas Spring initializr\spring-calculator-app\src\test\java\com\calculator\config\filter\JwtTokenValidatorTest.java
+C:\Users\juan_camacho\Desktop\Descargas Spring initializr\spring-calculator-app\src\test\java\com\calculator\exception\error\ArithmeticOperationExceptionTest.java
+C:\Users\juan_camacho\Desktop\Descargas Spring initializr\spring-calculator-app\src\test\java\com\calculator\exception\error\ElementNotFoundExceptionTest.java
+C:\Users\juan_camacho\Desktop\Descargas Spring initializr\spring-calculator-app\src\test\java\com\calculator\mapper\ICalculatorOperatorMapperImplTest.java
+C:\Users\juan_camacho\Desktop\Descargas Spring initializr\spring-calculator-app\src\test\java\com\calculator\persistence\entity\CalculatorOperationTest.java
+C:\Users\juan_camacho\Desktop\Descargas Spring initializr\spring-calculator-app\src\test\java\com\calculator\persistence\entity\UserEntityTest.java
+C:\Users\juan_camacho\Desktop\Descargas Spring initializr\spring-calculator-app\src\test\java\com\calculator\presentation\controller\AuthControllerTest.java
+C:\Users\juan_camacho\Desktop\Descargas Spring initializr\spring-calculator-app\src\test\java\com\calculator\presentation\controller\CalculatorOperationControllerTest.java
+C:\Users\juan_camacho\Desktop\Descargas Spring initializr\spring-calculator-app\src\test\java\com\calculator\service\impl\CalculationOperationServiceImplTest.java
+C:\Users\juan_camacho\Desktop\Descargas Spring initializr\spring-calculator-app\src\test\java\com\calculator\service\impl\UserDetailServiceImplTest.java
+C:\Users\juan_camacho\Desktop\Descargas Spring initializr\spring-calculator-app\src\test\java\com\calculator\SpringCalculatorAppApplicationTests.java
+C:\Users\juan_camacho\Desktop\Descargas Spring initializr\spring-calculator-app\src\test\java\com\calculator\Util\JwtUtilsTest.java

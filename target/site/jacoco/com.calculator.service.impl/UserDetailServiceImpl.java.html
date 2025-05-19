@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserDetailServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">spring-calculator-app</a> &gt; <a href="index.source.html" class="el_package">com.calculator.service.impl</a> &gt; <span class="el_source">UserDetailServiceImpl.java</span></div><h1>UserDetailServiceImpl.java</h1><pre class="source lang-java linenums">package com.calculator.service.impl;
+
+import com.calculator.persistence.entity.UserEntity;
+import com.calculator.persistence.repository.IUserRepository;
+import com.calculator.presentation.dto.login.AuthLoginRequest;
+import com.calculator.presentation.dto.register.AuthRegisterResponse;
+import com.calculator.presentation.dto.register.AuthRegisterRequest;
+import com.calculator.presentation.dto.login.AuthLoginResponse;
+import com.calculator.util.JwtUtils;
+import lombok.AllArgsConstructor;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
+@Service
+<span class="fc" id="L27">@AllArgsConstructor</span>
+public class UserDetailServiceImpl implements UserDetailsService {
+
+    private IUserRepository userRepository;
+    private PasswordEncoder passwordEncoder;
+    private JwtUtils jwtUtils;
+
+    public static class CustomUserDetails implements UserDetails {
+        private final String username;
+        private final String password;
+        private final String email;
+        private final boolean enabled;
+        private final boolean accountNonExpired;
+        private final boolean credentialsNonExpired;
+        private final boolean accountNonLocked;
+        private final Collection&lt;? extends GrantedAuthority&gt; authorities;
+
+        public CustomUserDetails(String username, String password, String email,
+                                 boolean enabled, boolean accountNonExpired,
+                                 boolean credentialsNonExpired, boolean accountNonLocked,
+<span class="fc" id="L47">                                 Collection&lt;? extends GrantedAuthority&gt; authorities) {</span>
+<span class="fc" id="L48">            this.username = username;</span>
+<span class="fc" id="L49">            this.password = password;</span>
+<span class="fc" id="L50">            this.email = email;</span>
+<span class="fc" id="L51">            this.enabled = enabled;</span>
+<span class="fc" id="L52">            this.accountNonExpired = accountNonExpired;</span>
+<span class="fc" id="L53">            this.credentialsNonExpired = credentialsNonExpired;</span>
+<span class="fc" id="L54">            this.accountNonLocked = accountNonLocked;</span>
+<span class="fc" id="L55">            this.authorities = authorities;</span>
+<span class="fc" id="L56">        }</span>
+
+        @Override
+        public Collection&lt;? extends GrantedAuthority&gt; getAuthorities() {
+<span class="fc" id="L60">            return authorities;</span>
+        }
+
+        @Override
+        public String getPassword() {
+<span class="fc" id="L65">            return password;</span>
+        }
+
+        @Override
+        public String getUsername() {
+<span class="fc" id="L70">            return username;</span>
+        }
+
+        public String getEmail() {
+<span class="fc" id="L74">            return email;</span>
+        }
+
+        @Override
+        public boolean isAccountNonExpired() {
+<span class="fc" id="L79">            return accountNonExpired;</span>
+        }
+
+        @Override
+        public boolean isAccountNonLocked() {
+<span class="fc" id="L84">            return accountNonLocked;</span>
+        }
+
+        @Override
+        public boolean isCredentialsNonExpired() {
+<span class="fc" id="L89">            return credentialsNonExpired;</span>
+        }
+
+        @Override
+        public boolean isEnabled() {
+<span class="fc" id="L94">            return enabled;</span>
+        }
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+<span class="fc" id="L100">        UserEntity user = userRepository.findUserEntityByUsername(username)</span>
+<span class="fc" id="L101">                .orElseThrow(() -&gt; new UsernameNotFoundException(&quot;The user &quot; + username + &quot; doesn't exist&quot;));</span>
+
+<span class="fc" id="L103">        return new CustomUserDetails(</span>
+<span class="fc" id="L104">                user.getUsername(),</span>
+<span class="fc" id="L105">                user.getPassword(),</span>
+<span class="fc" id="L106">                user.getEmail(),</span>
+<span class="fc" id="L107">                user.isEnabled(),</span>
+<span class="fc" id="L108">                user.isAccountNoExpired(),</span>
+<span class="fc" id="L109">                user.isCredentialNoExpired(),</span>
+<span class="fc" id="L110">                user.isAccountNoLocked(),</span>
+                new ArrayList&lt;&gt;()
+        );
+    }
+
+    public Authentication authenticate(String username, String password) {
+<span class="fc" id="L116">        UserDetails userDetails = this.loadUserByUsername(username);</span>
+
+<span class="fc bfc" id="L118" title="All 2 branches covered.">        if (!passwordEncoder.matches(password, userDetails.getPassword())) {</span>
+<span class="fc" id="L119">            throw new BadCredentialsException(&quot;Invalid password&quot;);</span>
+        }
+
+<span class="fc" id="L122">        return new UsernamePasswordAuthenticationToken(</span>
+<span class="fc" id="L123">                userDetails.getUsername(),</span>
+<span class="fc" id="L124">                userDetails.getPassword(),</span>
+<span class="fc" id="L125">                userDetails.getAuthorities());</span>
+    }
+
+    public AuthLoginResponse loginUser(AuthLoginRequest authLoginRequest) {
+
+<span class="fc" id="L130">        String username = authLoginRequest.username();</span>
+<span class="fc" id="L131">        String password = authLoginRequest.password();</span>
+
+<span class="fc" id="L133">        Authentication authentication = this.authenticate(username, password);</span>
+
+<span class="fc" id="L135">        String accessToken = this.jwtUtils.createToken(authentication);</span>
+
+<span class="fc" id="L137">        return new AuthLoginResponse(username, &quot;User logged in correctly&quot;, accessToken, true);</span>
+    }
+
+    public AuthRegisterResponse registerUser(AuthRegisterRequest authregisterRequest){
+<span class="fc" id="L141">        String username = authregisterRequest.username();</span>
+<span class="fc" id="L142">        String password = authregisterRequest.password();</span>
+<span class="fc" id="L143">        String email = authregisterRequest.email();</span>
+
+<span class="fc" id="L145">        String encodedPassword = passwordEncoder.encode(password);</span>
+
+<span class="fc" id="L147">        UserEntity userEntity = UserEntity.builder()</span>
+<span class="fc" id="L148">                .username(username)</span>
+<span class="fc" id="L149">                .password(encodedPassword)</span>
+<span class="fc" id="L150">                .email(email)</span>
+<span class="fc" id="L151">                .isEnabled(true)</span>
+<span class="fc" id="L152">                .accountNoExpired(true)</span>
+<span class="fc" id="L153">                .accountNoLocked(true)</span>
+<span class="fc" id="L154">                .credentialNoExpired(true)</span>
+<span class="fc" id="L155">                .build();</span>
+
+<span class="fc" id="L157">        UserEntity userEntitySaved = this.userRepository.save(userEntity);</span>
+
+<span class="fc" id="L159">        return new AuthRegisterResponse(userEntitySaved.getUsername(),userEntitySaved.getEmail(),&quot;User created successfully&quot;,true);</span>
+    }
+
+    public UserEntity getCurrentUsername() {
+<span class="fc" id="L163">        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();</span>
+<span class="fc" id="L164">        String username = authentication.getName();</span>
+<span class="fc" id="L165">        return this.userRepository.findUserEntityByUsername(username).orElseThrow(() -&gt;</span>
+<span class="fc" id="L166">                new AuthenticationCredentialsNotFoundException(&quot;User don't authenticated&quot;));</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

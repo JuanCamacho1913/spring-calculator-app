@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CalculatorOperationServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">spring-calculator-app</a> &gt; <a href="index.source.html" class="el_package">com.calculator.service.impl</a> &gt; <span class="el_source">CalculatorOperationServiceImpl.java</span></div><h1>CalculatorOperationServiceImpl.java</h1><pre class="source lang-java linenums">package com.calculator.service.impl;
+
+import com.calculator.exception.error.ArithmeticOperationException;
+import com.calculator.exception.error.ElementNotFoundException;
+import com.calculator.mapper.ICalculatorOperatorMapper;
+import com.calculator.persistence.entity.CalculatorOperation;
+import com.calculator.persistence.entity.UserEntity;
+import com.calculator.persistence.repository.ICalculatorRepository;
+import com.calculator.presentation.dto.CalculationOperationRequest;
+import com.calculator.presentation.dto.CalculationOperationResponse;
+import com.calculator.service.interfaces.ICalculatorOperationService;
+import com.calculator.util.OperationTypeEnum;
+import lombok.AllArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
+import java.util.UUID;
+
+@Service
+<span class="fc" id="L27">@AllArgsConstructor</span>
+public class CalculatorOperationServiceImpl implements ICalculatorOperationService {
+
+    private ICalculatorRepository calculatorRepository;
+    private ICalculatorOperatorMapper calculatorOperatorMapper;
+    private UserDetailServiceImpl userDetailServiceImpl;
+
+    @Override
+    public Page&lt;CalculationOperationResponse&gt; findAll(Pageable pageable, String operationType, String startDate, String endDate) {
+
+<span class="fc bfc" id="L37" title="All 6 branches covered.">        if (!StringUtils.isBlank(operationType) &amp;&amp; StringUtils.isBlank(startDate) &amp;&amp; StringUtils.isBlank(endDate)) {</span>
+<span class="fc" id="L38">           Page&lt;CalculatorOperation&gt; calculatorOperations = this.calculatorRepository.findByOperation(OperationTypeEnum.valueOf(operationType), pageable);</span>
+<span class="fc" id="L39">           return calculatorOperations.map(calculatorOperation -&gt; this.calculatorOperatorMapper.toResponse(calculatorOperation));</span>
+        }
+
+<span class="fc bfc" id="L42" title="All 6 branches covered.">        if (StringUtils.isBlank(operationType) &amp;&amp; !StringUtils.isBlank(startDate) &amp;&amp; !StringUtils.isBlank(endDate)) {</span>
+            LocalDateTime start;
+            LocalDateTime end;
+
+            try {
+<span class="fc" id="L47">                start = LocalDateTime.parse(startDate);</span>
+<span class="fc" id="L48">                end = LocalDateTime.parse(endDate);</span>
+<span class="fc" id="L49">                Page&lt;CalculatorOperation&gt; calculatorOperationTimes = this.calculatorRepository.findByTimestampBetween(start, end, pageable);</span>
+<span class="fc" id="L50">                return calculatorOperationTimes.map(calculatorOperation -&gt; this.calculatorOperatorMapper.toResponse(calculatorOperation));</span>
+<span class="fc" id="L51">            }catch (DateTimeParseException dateTimeParseException){</span>
+<span class="fc" id="L52">                throw new RuntimeException(&quot;Error parsing date&quot; + dateTimeParseException.getMessage());</span>
+            }
+
+        }
+
+<span class="fc" id="L57">        Page&lt;CalculatorOperation&gt; calculatorOperation = this.calculatorRepository.findAll(pageable);</span>
+<span class="fc" id="L58">        return calculatorOperation.map(calculatorOperation1 -&gt; this.calculatorOperatorMapper.toResponse(calculatorOperation1));</span>
+    }
+
+    @Override
+    public CalculationOperationResponse findById(UUID id) {
+<span class="fc" id="L63">        CalculatorOperation calculatorOperation = this.calculatorRepository.findById(id)</span>
+<span class="fc" id="L64">                .orElseThrow(() -&gt; new ElementNotFoundException(&quot;Operation whit &quot; + id + &quot; does not exist&quot;));</span>
+
+<span class="fc" id="L66">        return this.calculatorOperatorMapper.toResponse(calculatorOperation);</span>
+    }
+
+    @Override
+    public CalculationOperationResponse saveCalculation(CalculationOperationRequest request) {
+
+        BigDecimal result;
+
+<span class="fc bfc" id="L74" title="All 7 branches covered.">        switch (request.operation()){</span>
+            case ADDITION:
+<span class="fc" id="L76">                result = request.operandA().add(request.operandB()).setScale(2, RoundingMode.HALF_UP);</span>
+<span class="fc" id="L77">                break;</span>
+            case SUBTRACTION:
+<span class="fc" id="L79">                result = request.operandA().subtract(request.operandB()).setScale(2, RoundingMode.HALF_UP);</span>
+<span class="fc" id="L80">                break;</span>
+            case MULTIPLICATION:
+<span class="fc" id="L82">                result = request.operandA().multiply(request.operandB()).setScale(2, RoundingMode.HALF_UP);</span>
+<span class="fc" id="L83">                break;</span>
+            case DIVISION:
+<span class="fc bfc" id="L85" title="All 2 branches covered.">                if (BigDecimal.ZERO.compareTo(request.operandB()) == 0) {</span>
+<span class="fc" id="L86">                    throw new ArithmeticException(&quot;Cannot be divided by zero.&quot;);</span>
+                }
+<span class="fc" id="L88">                result = request.operandA().divide(request.operandB(), MathContext.DECIMAL128).setScale(2, RoundingMode.HALF_UP);</span>
+<span class="fc" id="L89">                break;</span>
+            case POWER:
+<span class="fc" id="L91">                result = request.operandA().pow(request.operandB().intValueExact()).setScale(2, RoundingMode.HALF_UP);</span>
+<span class="fc" id="L92">                break;</span>
+            case SQUARE_ROOT:
+<span class="fc bfc" id="L94" title="All 2 branches covered.">                if (request.operandA().compareTo(BigDecimal.ZERO) &lt;= 0) {</span>
+<span class="fc" id="L95">                    throw new ArithmeticException(&quot;Cannot calculate square root of 0 or negative number.&quot;);</span>
+                }
+<span class="fc" id="L97">                double operandA = request.operandA().doubleValue();</span>
+<span class="fc" id="L98">                result = BigDecimal.valueOf(Math.sqrt(operandA)).round(new MathContext(7)).setScale(2, RoundingMode.HALF_UP);</span>
+<span class="fc" id="L99">                break;</span>
+            default:
+<span class="fc" id="L101">                throw new ArithmeticOperationException(&quot;Arithmetic operation don't exist&quot;);</span>
+        }
+<span class="fc" id="L103">        UserEntity user = this.userDetailServiceImpl.getCurrentUsername();</span>
+<span class="fc" id="L104">        CalculatorOperation calculatorOperation = this.calculatorOperatorMapper.toEntity(request);</span>
+<span class="fc" id="L105">        calculatorOperation.setResult(result);</span>
+<span class="fc" id="L106">        calculatorOperation.setUser(user);</span>
+<span class="fc" id="L107">        CalculatorOperation calculatorOperationSaved = this.calculatorRepository.save(calculatorOperation);</span>
+<span class="fc" id="L108">        return this.calculatorOperatorMapper.toResponse(calculatorOperationSaved);</span>
+    }
+
+    @Override
+    public String delete(UUID id) {
+<span class="fc" id="L113">        CalculatorOperation calculatorOperation = this.calculatorRepository.findById(id)</span>
+<span class="fc" id="L114">                .orElseThrow(() -&gt; new ElementNotFoundException(&quot;Operation whit &quot; + id + &quot; does not exist&quot;));</span>
+
+<span class="fc" id="L116">        this.calculatorRepository.delete(calculatorOperation);</span>
+
+<span class="fc" id="L118">        return &quot;Operation delete successful&quot;;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>
