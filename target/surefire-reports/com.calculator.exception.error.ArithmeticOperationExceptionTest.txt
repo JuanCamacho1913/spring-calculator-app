@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.calculator.exception.error.ArithmeticOperationExceptionTest
+-------------------------------------------------------------------------------
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.014 s -- in com.calculator.exception.error.ArithmeticOperationExceptionTest
