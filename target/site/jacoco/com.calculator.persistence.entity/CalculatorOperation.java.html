@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CalculatorOperation.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">spring-calculator-app</a> &gt; <a href="index.source.html" class="el_package">com.calculator.persistence.entity</a> &gt; <span class="el_source">CalculatorOperation.java</span></div><h1>CalculatorOperation.java</h1><pre class="source lang-java linenums">package com.calculator.persistence.entity;
+
+import com.calculator.util.OperationTypeEnum;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+@Entity
+@Getter
+<span class="fc" id="L16">@Setter</span>
+<span class="fc" id="L17">@NoArgsConstructor</span>
+<span class="fc" id="L18">@AllArgsConstructor</span>
+@Table(name = &quot;calculator_operation&quot;)
+public class CalculatorOperation {
+
+    @Id
+<span class="fc" id="L23">    private UUID id;</span>
+
+    @Enumerated(EnumType.STRING)
+<span class="fc" id="L26">    private OperationTypeEnum operation;</span>
+
+    @Column(name = &quot;operand_A&quot;, precision = 7, nullable = false)
+<span class="fc" id="L29">    private BigDecimal operandA;</span>
+    @Column(name = &quot;operand_B&quot;, precision = 7, nullable = false)
+<span class="fc" id="L31">    private BigDecimal operandB;</span>
+    @Column(precision = 10, scale = 2, nullable = false)
+<span class="fc" id="L33">    private BigDecimal result;</span>
+    @Column(nullable = false, updatable = false)
+<span class="fc" id="L35">    private LocalDateTime timestamp;</span>
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = &quot;user_id&quot;, nullable = false)
+<span class="fc" id="L39">    private UserEntity user;</span>
+
+    @PrePersist
+    public void prePersist(){
+<span class="fc bfc" id="L43" title="All 2 branches covered.">        if (id == null){</span>
+<span class="fc" id="L44">            this.id = UUID.randomUUID();</span>
+        }
+
+<span class="fc" id="L47">        this.timestamp = LocalDateTime.now();</span>
+<span class="fc" id="L48">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>
